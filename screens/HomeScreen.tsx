@@ -2,6 +2,7 @@ import React from 'react';
 import {ActivityIndicator, Alert, StyleSheet, Text, View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {DrawerToggle, headerOptions} from '../menus/HeaderComponents';
+import {AuthManager} from '../auth/AuthManager';
 
 const Stack = createStackNavigator();
 const UserState = React.createContext({userLoading: true, userName: ''});
@@ -27,6 +28,17 @@ export default class HomeScreen extends React.Component {
     userLoading: true,
     userName: '',
   };
+
+  async componentDidMount() {
+    try {
+      const accessToken = await AuthManager.getAccessTokenAsync();
+
+      // TEMPORARY
+      this.setState({userName: accessToken, userLoading: false});
+    } catch (error) {
+      alert(error);
+    }
+  }
 
   render() {
     return (

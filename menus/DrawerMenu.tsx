@@ -16,6 +16,8 @@ import {
 } from '@react-navigation/drawer';
 import {NavigationContext} from '@react-navigation/native';
 
+import {AuthManager} from '../auth/AuthManager';
+
 import HomeScreen from '../screens/HomeScreen';
 import CalendarScreen from '../screens/CalendarScreen';
 
@@ -62,8 +64,10 @@ export default class DrawerMenuContent extends React.Component {
 
   _signOut = async () => {
     const navigation = this.context;
+
     // Sign out
-    // TEMPORARY
+    await AuthManager.signOutAsync();
+
     navigation.reset({
       index: 0,
       routes: [{name: 'SignIn'}],

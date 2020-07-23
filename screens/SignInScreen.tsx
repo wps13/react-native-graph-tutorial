@@ -2,6 +2,7 @@
 import React from 'react';
 import {Alert, Button, StyleSheet, View} from 'react-native';
 import {NavigationContext} from '@react-navigation/native';
+import {AuthManager} from '../auth/AuthManager';
 
 export default class SignInScreen extends React.Component {
   static contextType = NavigationContext;
@@ -12,14 +13,26 @@ export default class SignInScreen extends React.Component {
 
   _signInAsync = async () => {
     const navigation = this.context;
+    try {
+      await AuthManager.signInAsync();
 
-    // TEMPORARY
-    navigation.reset({
-      index: 0,
-      routes: [{name: 'Main'}],
-    });
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Main'}],
+      });
+    } catch (error) {
+      Alert.alert(
+        'Error signing in',
+        JSON.stringify(error),
+        [
+          {
+            text: 'OK',
+          },
+        ],
+        {cancelable: false},
+      );
+    }
   };
-
   render() {
     const navigation = this.context;
     navigation.setOptions({
