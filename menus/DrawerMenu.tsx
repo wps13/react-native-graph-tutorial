@@ -15,7 +15,7 @@ import {
   DrawerContentComponentProps,
 } from '@react-navigation/drawer';
 import {NavigationContext} from '@react-navigation/native';
-
+import {AuthManager} from '../auth/AuthManager';
 import {GraphManager} from '../graph/GraphManager';
 
 import HomeScreen from '../screens/HomeScreen';
