@@ -16,7 +16,7 @@ import {
 } from '@react-navigation/drawer';
 import {NavigationContext} from '@react-navigation/native';
 
-import {AuthManager} from '../auth/AuthManager';
+import {GraphManager} from '../graph/GraphManager';
 
 import HomeScreen from '../screens/HomeScreen';
 import CalendarScreen from '../screens/CalendarScreen';
@@ -73,6 +73,32 @@ export default class DrawerMenuContent extends React.Component {
       routes: [{name: 'SignIn'}],
     });
   };
+
+  async componentDidMount() {
+    try {
+      // Get the signed-in user from Graph
+      const user = await GraphManager.getUserAsync();
+
+      // Update UI with display name and email
+      this.setState({
+        userName: user.displayName,
+        // Work/School accounts have email address in mail attribute
+        // Personal accounts have it in userPrincipalName
+        userEmail: user.mail !== null ? user.mail : user.userPrincipalName,
+      });
+    } catch (error) {
+      Alert.alert(
+        'Error getting user',
+        JSON.stringify(error),
+        [
+          {
+            text: 'OK',
+          },
+        ],
+        {cancelable: false},
+      );
+    }
+  }
 
   render() {
     const navigation = this.context;

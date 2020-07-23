@@ -2,10 +2,13 @@ import React from 'react';
 import {ActivityIndicator, Alert, StyleSheet, Text, View} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {DrawerToggle, headerOptions} from '../menus/HeaderComponents';
-import {AuthManager} from '../auth/AuthManager';
+import {GraphManager} from '../graph/GraphManager';
 
 const Stack = createStackNavigator();
-const UserState = React.createContext({userLoading: true, userName: ''});
+const UserState = React.createContext({
+  userLoading: true,
+  userName: '',
+});
 
 type HomeScreenState = {
   userLoading: boolean;
@@ -18,7 +21,11 @@ const HomeComponent = () => {
   return (
     <View style={styles.container}>
       <ActivityIndicator animating={userState.userLoading} size="large" />
-      {userState.userLoading ? null : <Text>Hello {userState.userName}!</Text>}
+      {userState.userLoading ? null : (
+        <View>
+          <Text>Hello {userState.userName}!</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -31,12 +38,24 @@ export default class HomeScreen extends React.Component {
 
   async componentDidMount() {
     try {
-      const accessToken = await AuthManager.getAccessTokenAsync();
-
-      // TEMPORARY
-      this.setState({userName: accessToken, userLoading: false});
+      // Get the signed-in user from Graph
+      const user = await GraphManager.getUserAsync();
+      // Set the user name to the user's given name
+      this.setState({
+        userName: user.givenName,
+        userLoading: false,
+      });
     } catch (error) {
-      alert(error);
+      Alert.alert(
+        'Error getting user',
+        JSON.stringify(error),
+        [
+          {
+            text: 'OK',
+          },
+        ],
+        {cancelable: false},
+      );
     }
   }
 
